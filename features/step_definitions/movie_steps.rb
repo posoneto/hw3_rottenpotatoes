@@ -15,7 +15,11 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
-  flunk "Unimplemented"
+  first = page.body.index(e1)
+  second = page.body.index(e2)
+  first.should < second
+
+  #flunk "Unimplemented"
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -33,7 +37,7 @@ Given /^(?:|I )check the following ratings: "([^"]*)"$/ do |field|
 end
 
 Then /^I should see all the movies$/ do  
-#Then /Then I should see all the movies/ do |value|
     rows = Movie.count
-    rows.should == 10  
+    rows.should == 10
 end
+
