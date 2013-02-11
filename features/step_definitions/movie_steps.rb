@@ -1,4 +1,4 @@
-# Add a declarative step here for populating the DB with movies.
+# Add a declarative step ere for populating the DB with movies.
 
 Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
@@ -15,9 +15,9 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
-  first = page.body.index(e1)
-  second = page.body.index(e2)
-  first.should < second
+  
+  regexp = /#{e1}.*#{e2}/m
+  page.body.should =~ regexp
 
   #flunk "Unimplemented"
 end
@@ -30,14 +30,49 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  
 end
-
+ 
 Given /^(?:|I )check the following ratings: "([^"]*)"$/ do |field|
-  check(field)
-end
+  
+    check(field)
+  end
+  
+  Then /I uncheck the following ratings: "([^"]*)"$/ do |checkedbox| 
+    
+    uncheck(checkbox) 
+  end
+  
+  Then /^(?:|I )press "([^"]*)"$/ do |button|
+    click_button(button)
+  end
+  
+  Then /^I should see "(.*?)", "(.*?)"$/ do |r1, r2|
+   if page.respond_to? :should
+    page.should have_content(r1)
+    page.should have_content(r2)
+   else
+    assert page.has_content?(r1)
+    assert page.has_content?(r2)
+   end
+  end 
+  
+  Then /^I should not see "(.*?)", "(.*?)"$/ do |r1, r2|
+   if page.respond_to? :should
+    page.should have_no_content(r1)
+    page.should have_no_content(r2)
+   else
+    assert page.has_no_content?(r1)
+    assert page.has_no_content?(r2) 
+   end
+  end
 
 Then /^I should see all the movies$/ do  
     rows = Movie.count
-    rows.should == 10
+    selected = Movie.find_all_by_rating(['R', 'G', 'RG', 'PG-13'])
+    rows.should == selected
 end
 
+#Then /^(?:|I )uncheck the following ratings: "([^"]*)"$/ do |field| 
+#    uncheck(field)
+#end

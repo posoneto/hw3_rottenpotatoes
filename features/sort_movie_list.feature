@@ -28,5 +28,6 @@ Scenario: sort movies alphabetically
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
+  Then I should see "1992-11-25 00:00:00 UTC" before "2011-08-10 00:00:00 UTC"
   # your steps here
 
